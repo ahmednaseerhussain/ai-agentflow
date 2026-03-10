@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentFlow — AI Employees for Local Service Businesses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060608;
+  --s1: #0b0b0f;
+  --s2: #111116;
+  --border: rgba(255,255,255,0.07);
+  --border-hi: rgba(255,255,255,0.13);
+  --green: #00E5A0;
+  --green-dim: rgba(0,229,160,0.08);
+  --blue: #4B9EFF;
+  --orange: #FF7B3E;
+  --text: #EBEBF0;
+  --muted: #52526A;
+  --muted2: #8080A0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ─── NOISE ─── */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
+
+/* ─── NAV ─── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(6,6,8,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.03em;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text)}
+.logo-icon{width:30px;height:30px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--muted2);text-decoration:none;font-size:0.875rem;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 20px;border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:0.875rem;cursor:pointer;text-decoration:none;transition:all 0.2s;border:none}
+.btn-ghost{background:transparent;border:1px solid var(--border-hi);color:var(--muted2)}
+.btn-ghost:hover{border-color:var(--green);color:var(--green)}
+.btn-primary{background:var(--green);color:#060608}
+.btn-primary:hover{background:#fff;box-shadow:0 0 28px rgba(0,229,160,0.35);transform:translateY(-1px)}
+.btn-lg{padding:13px 28px;font-size:0.95rem;border-radius:10px}
+
+/* ─── HERO ─── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 60px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,160,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,0.025) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 75% 65% at 50% 40%,black,transparent)}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+.orb-main{width:560px;height:380px;background:rgba(0,229,160,0.055);top:15%;left:50%;transform:translateX(-50%)}
+.orb-left{width:280px;height:280px;background:rgba(75,158,255,0.04);top:45%;left:10%}
+.orb-right{width:220px;height:220px;background:rgba(255,123,62,0.035);top:35%;right:12%}
+
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 6px 5px 14px;border:1px solid rgba(0,229,160,0.22);border-radius:100px;margin-bottom:28px;animation:fadeUp 0.6s ease both}
+.eyebrow-text{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--muted2)}
+.eyebrow-pill{background:var(--green);color:#060608;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:600;padding:4px 10px;border-radius:100px;letter-spacing:0.04em}
+
+.hero h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(3rem,7vw,5.8rem);letter-spacing:-0.05em;line-height:0.98;max-width:920px;animation:fadeUp 0.6s 0.07s ease both}
+.grad-text{background:linear-gradient(110deg,var(--green) 0%,var(--blue) 55%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.1rem;color:var(--muted2);max-width:500px;line-height:1.72;margin-top:22px;animation:fadeUp 0.6s 0.14s ease both}
+.hero-actions{display:flex;gap:12px;margin-top:34px;animation:fadeUp 0.6s 0.21s ease both}
+.trust-row{display:flex;align-items:center;gap:12px;margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--muted);animation:fadeUp 0.6s 0.28s ease both}
+.trust-avatars{display:flex}
+.tav{width:26px;height:26px;border-radius:50%;border:2px solid var(--bg);margin-left:-7px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.65rem;display:flex;align-items:center;justify-content:center;color:#060608}
+.tav:first-child{margin-left:0}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── DASHBOARD MOCKUP ─── */
+.dash-wrap{position:relative;width:100%;max-width:960px;margin-top:52px;animation:fadeUp 0.8s 0.38s ease both}
+.dash-glow{position:absolute;inset:-1px;border-radius:20px;background:linear-gradient(140deg,rgba(0,229,160,0.28),rgba(75,158,255,0.1),transparent 55%);z-index:0;border-radius:20px}
+.dash-frame{position:relative;z-index:1;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);background:var(--s1);box-shadow:0 48px 120px rgba(0,0,0,0.75),0 0 80px rgba(0,229,160,0.04)}
+.dash-bar{background:#09090d;padding:11px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.win-btns{display:flex;gap:6px}
+.wb{width:11px;height:11px;border-radius:50%}
+.dash-url{flex:1;max-width:300px;margin:0 auto;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--muted);text-align:center}
+.dash-content{display:grid;grid-template-columns:210px 1fr;min-height:440px}
+.dash-sidebar{background:#07070b;border-right:1px solid var(--border);padding:18px 0}
+.ds-brand{padding:0 14px 16px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:0.9rem;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.ds-logo{width:22px;height:22px;background:var(--green);border-radius:6px}
+.ds-section{padding:0 6px;margin-bottom:12px}
+.ds-sec-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;padding:0 8px;margin-bottom:6px}
+.ds-item{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:7px;font-size:0.78rem;color:var(--muted2);cursor:pointer;transition:all 0.15s}
+.ds-item:hover,.ds-item.on{background:rgba(0,229,160,0.06);color:var(--text)}
+.ds-item.on{color:var(--green)}
+.ds-item svg{opacity:0.6;flex-shrink:0}
+.ds-item.on svg{opacity:1}
+.ds-badge{margin-left:auto;background:var(--green);color:#060608;font-family:'JetBrains Mono',monospace;font-size:0.58rem;padding:1px 6px;border-radius:100px;font-weight:600}
+
+.dash-main{padding:22px}
+.dm-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.dm-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1rem;letter-spacing:-0.02em}
+.dm-sub{font-size:0.72rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
+.live-chip{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);border-radius:8px;padding:6px 12px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--green)}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,229,160,0.5)}60%{opacity:0.6;box-shadow:0 0 0 4px rgba(0,229,160,0)}}
+
+.metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.metric{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.metric-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:-0.04em}
+.metric-lbl{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--muted);margin-top:3px}
+.metric-up{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--green);margin-top:2px}
+
+.task-panel{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.tp-head{display:flex;justify-content:space-between;margin-bottom:12px}
+.tp-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+.tp-add{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--green);cursor:pointer}
+.task-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.task-row:last-child{border:none;padding-bottom:0}
+.t-check{width:14px;height:14px;border-radius:4px;border:1px solid var(--border-hi);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.t-check.done{background:var(--green);border-color:var(--green)}
+.t-name{font-size:0.77rem;flex:1;color:var(--text)}
+.t-chip{font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:2px 8px;border-radius:4px}
+.chip-g{background:rgba(0,229,160,0.1);color:var(--green)}
+.chip-b{background:rgba(75,158,255,0.1);color:var(--blue)}
+.chip-o{background:rgba(255,123,62,0.1);color:var(--orange)}
+
+/* ─── TICKER ─── */
+.ticker{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;background:var(--s1)}
+.ticker-track{display:flex;width:max-content;animation:tick 38s linear infinite}
+@keyframes tick{to{transform:translateX(-50%)}}
+.ti{display:flex;align-items:center;gap:8px;padding:0 28px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--muted);white-space:nowrap}
+.ti-dot{width:4px;height:4px;background:var(--green);border-radius:50%;flex-shrink:0}
+
+/* ─── LOGOS STRIP ─── */
+.logos{padding:44px 48px;display:flex;flex-direction:column;align-items:center;gap:18px;max-width:1100px;margin:0 auto}
+.logos-lbl{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase}
+.logos-row{display:flex;flex-wrap:wrap;gap:36px;justify-content:center}
+.lg{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.85rem;color:rgba(255,255,255,0.18);letter-spacing:0.06em;transition:color 0.2s}
+.lg:hover{color:rgba(255,255,255,0.5)}
+
+/* ─── SECTIONS SHARED ─── */
+.sec{padding:96px 48px;max-width:1100px;margin:0 auto}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--green);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:14px}
+.sec-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(2rem,3.8vw,3rem);letter-spacing:-0.04em;line-height:1.08}
+.sec-sub{color:var(--muted2);font-size:0.95rem;max-width:460px;margin-top:14px;line-height:1.72}
+.sec-center{text-align:center}
+.sec-center .sec-sub{margin:14px auto 0}
+
+/* ─── PROBLEM ─── */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.ba-stack{display:flex;flex-direction:column;gap:12px}
+.ba{border:1px solid var(--border);border-radius:14px;padding:20px;background:var(--s1)}
+.ba.good{border-color:rgba(0,229,160,0.22);background:rgba(0,229,160,0.025)}
+.ba-head{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ba-head.bad-h{color:rgba(255,100,100,0.65)}
+.ba-head.good-h{color:var(--green)}
+.ba-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:0.81rem;color:var(--muted2)}
+.ba-row:last-child{border:none}
+.ba-row svg{flex-shrink:0;opacity:0.6}
+.prob-checks{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+.pcheck{display:flex;align-items:flex-start;gap:12px;font-size:0.9rem;color:var(--muted2)}
+.pcheck-icon{flex-shrink:0;margin-top:1px}
+
+/* ─── STEPS ─── */
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.step{padding:34px 26px;background:var(--s1);transition:background 0.25s;position:relative}
+.step:hover{background:var(--s2)}
+.step-n{font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:20px}
+.step-ico{width:42px;height:42px;border-radius:10px;background:var(--s2);border:1px solid var(--border-hi);display:flex;align-items:center;justify-content:center;margin-bottom:16px;transition:all 0.25s}
+.step:hover .step-ico{background:var(--green-dim);border-color:rgba(0,229,160,0.25)}
+.step h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.98rem;letter-spacing:-0.02em;margin-bottom:8px}
+.step p{font-size:0.81rem;color:var(--muted2);line-height:1.62}
+.step-arr{position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:28px;height:28px;background:var(--bg);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;color:var(--green)}
+.step:last-child .step-arr{display:none}
+
+/* ─── FEATURES ─── */
+.feat-bento{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto;gap:14px}
+.feat{border:1px solid var(--border);border-radius:16px;padding:26px;background:var(--s1);transition:all 0.25s;position:relative;overflow:hidden}
+.feat::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,160,0.45),transparent);opacity:0;transition:opacity 0.3s}
+.feat:hover{border-color:rgba(0,229,160,0.18);transform:translateY(-3px);box-shadow:0 20px 56px rgba(0,0,0,0.55)}
+.feat:hover::after{opacity:1}
+.feat.f-wide{grid-column:span 2}
+.feat-ico{width:38px;height:38px;border-radius:10px;border:1px solid var(--border-hi);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.fi-green{background:var(--green-dim);border-color:rgba(0,229,160,0.2)}
+.fi-blue{background:rgba(75,158,255,0.07);border-color:rgba(75,158,255,0.2)}
+.fi-orange{background:rgba(255,123,62,0.07);border-color:rgba(255,123,62,0.2)}
+.feat h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1rem;letter-spacing:-0.02em;margin-bottom:8px}
+.feat p{font-size:0.81rem;color:var(--muted2);line-height:1.65}
+.feat-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.fpill{font-family:'JetBrains Mono',monospace;font-size:0.62rem;padding:3px 9px;border-radius:100px;border:1px solid var(--border-hi);color:var(--muted2)}
+
+/* MINI METRICS INSIDE FEAT */
+.mini-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.mm{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.mm-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:-0.03em}
+.mm-lbl{font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--muted);margin-top:3px}
+
+/* ─── USE CASES ─── */
+.uc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.uc{border:1px solid var(--border);border-radius:14px;padding:22px 18px;background:var(--s1);transition:all 0.22s;cursor:default}
+.uc:hover{border-color:rgba(0,229,160,0.2);background:var(--s2);transform:translateY(-3px)}
+.uc-ico{width:36px;height:36px;border-radius:9px;background:var(--s2);border:1px solid var(--border-hi);display:flex;align-items:center;justify-content:center;margin-bottom:12px;transition:all 0.22s}
+.uc:hover .uc-ico{background:var(--green-dim);border-color:rgba(0,229,160,0.22)}
+.uc-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:-0.02em;margin-bottom:6px}
+.uc-desc{font-size:0.75rem;color:var(--muted2);line-height:1.55}
+
+/* ─── INTEGRATIONS ─── */
+.intg-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:10px}
+.intg{border:1px solid var(--border);border-radius:12px;padding:16px 10px;background:var(--s1);display:flex;flex-direction:column;align-items:center;gap:8px;transition:all 0.2s}
+.intg:hover{border-color:rgba(0,229,160,0.22);transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,0,0,0.55)}
+.intg-name{font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--muted);text-align:center}
+.intg-more{border-style:dashed;opacity:0.45}
+
+/* ─── PRICING ─── */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.price{border:1px solid var(--border);border-radius:18px;padding:30px;background:var(--s1);position:relative;transition:all 0.25s}
+.price.pop{border-color:rgba(0,229,160,0.3);background:rgba(0,229,160,0.02)}
+.pop-lbl{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--green);color:#060608;font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:600;letter-spacing:0.1em;padding:3px 14px;border-radius:100px;white-space:nowrap}
+.price-plan{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--green);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px}
+.price-amt{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:2.8rem;letter-spacing:-0.06em;line-height:1;margin-bottom:5px}
+.price-amt sup{font-size:1.1rem;vertical-align:top;margin-top:5px;font-weight:600;opacity:0.65}
+.price-amt span{font-size:0.95rem;font-weight:400;color:var(--muted);letter-spacing:0}
+.price-desc{font-size:0.82rem;color:var(--muted2);margin-bottom:22px;line-height:1.55}
+.price-ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:26px}
+.price-ul li{font-size:0.84rem;color:var(--muted2);display:flex;align-items:flex-start;gap:9px}
+.price-ul li svg{flex-shrink:0;margin-top:1px;color:var(--green)}
+.price-ul li.off svg{color:var(--muted)}
+.price-ul li.off{opacity:0.38}
+.btn-block{display:block;width:100%;padding:11px;border-radius:10px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:all 0.2s;text-decoration:none}
+.btn-b-ghost{background:transparent;border:1px solid var(--border-hi);color:var(--text)}
+.btn-b-ghost:hover{border-color:var(--green);color:var(--green)}
+.btn-b-green{background:var(--green);border:none;color:#060608}
+.btn-b-green:hover{background:#fff;box-shadow:0 0 24px rgba(0,229,160,0.3)}
+
+/* ─── TESTIMONIALS ─── */
+.testi-bg{background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tc{border:1px solid var(--border);border-radius:14px;padding:24px;background:var(--bg);transition:border-color 0.2s}
+.tc:hover{border-color:rgba(0,229,160,0.18)}
+.tc-stars{display:flex;gap:3px;margin-bottom:12px;color:#F59E0B;font-size:0.82rem}
+.tc-text{font-size:0.87rem;line-height:1.7;color:rgba(235,235,240,0.8);margin-bottom:16px}
+.tc-author{display:flex;align-items:center;gap:10px}
+.tc-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:0.75rem;color:#060608;flex-shrink:0}
+.tc-name{font-family:'Bricolage Grotesque',sans-serif;font-size:0.875rem;font-weight:700}
+.tc-role{font-size:0.72rem;color:var(--muted);margin-top:1px}
+
+/* ─── CTA ─── */
+.cta-sec{padding:120px 48px;text-align:center;position:relative;overflow:hidden}
+.cta-orb{position:absolute;width:700px;height:350px;background:radial-gradient(ellipse,rgba(0,229,160,0.065),transparent);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;border-radius:50%}
+.cta-sec h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:-0.05em;max-width:640px;margin:0 auto 18px;line-height:1.04}
+.cta-sec p{color:var(--muted2);font-size:1rem;max-width:400px;margin:0 auto 32px;line-height:1.72}
+.cta-note{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--muted)}
+
+/* ─── FOOTER ─── */
+footer{border-top:1px solid var(--border);padding:56px 48px 28px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:40px}
+.ft-desc{font-size:0.84rem;color:var(--muted2);line-height:1.7;max-width:230px;margin-top:12px}
+.ft-col h5{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.83rem;margin-bottom:14px}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.ft-col ul a{font-size:0.83rem;color:var(--muted2);text-decoration:none;transition:color 0.2s}
+.ft-col ul a:hover{color:var(--text)}
+.ft-bottom{max-width:1100px;margin:0 auto;padding:20px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--muted)}
+
+/* ─── REVEAL ─── */
+.r{opacity:0;transform:translateY(26px);transition:opacity 0.65s ease,transform 0.65s ease}
+.r.on{opacity:1;transform:translateY(0)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:960px){
+  nav{padding:0 20px}.nav-links{display:none}
+  .problem-grid{grid-template-columns:1fr;gap:36px}
+  .steps-grid{grid-template-columns:1fr 1fr}
+  .feat-bento{grid-template-columns:1fr 1fr}.feat.f-wide{grid-column:span 1}
+  .uc-grid{grid-template-columns:repeat(3,1fr)}
+  .intg-grid{grid-template-columns:repeat(4,1fr)}
+  .price-grid{grid-template-columns:1fr}
+  .testi-grid{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr 1fr}
+  .dash-content{grid-template-columns:1fr}.dash-sidebar{display:none}
+  .metric-row{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .hero h1{font-size:2.6rem}
+  .hero-actions{flex-direction:column}
+  .steps-grid{grid-template-columns:1fr}
+  .feat-bento{grid-template-columns:1fr}
+  .uc-grid{grid-template-columns:1fr 1fr}
+  .intg-grid{grid-template-columns:repeat(3,1fr)}
+  footer{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="1" y="1" width="6" height="6" rx="1.5" fill="#060608"/>
+        <rect x="9" y="1" width="6" height="6" rx="1.5" fill="#060608"/>
+        <rect x="1" y="9" width="6" height="6" rx="1.5" fill="#060608"/>
+        <rect x="9" y="9" width="6" height="6" rx="1.5" fill="#060608" opacity="0.35"/>
+      </svg>
+    </div>
+    AgentFlow
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#businesses">Industries</a></li>
+    <li><a href="#integrations">Integrations</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#" class="btn btn-ghost">Sign In</a>
+    <a href="#pricing" class="btn btn-primary">Get Started Free →</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb orb-main"></div>
+  <div class="hero-orb orb-left"></div>
+  <div class="hero-orb orb-right"></div>
+
+  <div class="eyebrow">
+    <span class="eyebrow-text">AI Employee Builder for Local Businesses</span>
+    <span class="eyebrow-pill">US MARKET</span>
+  </div>
+
+  <h1>Your Business,<br><span class="grad-text">Always On.</span></h1>
+
+  <p class="hero-sub">Build a custom AI employee in minutes. Configure exactly what it does, connect your tools, and deploy — no code, no developers, no waiting.</p>
+
+  <div class="hero-actions">
+    <a href="#pricing" class="btn btn-primary btn-lg">Build My AI Agent Free →</a>
+    <a href="#how" class="btn btn-ghost btn-lg">See How It Works</a>
+  </div>
+
+  <div class="trust-row">
+    <div class="trust-avatars">
+      <div class="tav" style="background:linear-gradient(135deg,#00E5A0,#4B9EFF)">JM</div>
+      <div class="tav" style="background:linear-gradient(135deg,#4B9EFF,#A78BFA)">SR</div>
+      <div class="tav" style="background:linear-gradient(135deg,#FF7B3E,#A78BFA)">TK</div>
+      <div class="tav" style="background:linear-gradient(135deg,#A78BFA,#00E5A0)">LB</div>
+    </div>
+    <span>14,000+ local businesses running AI agents</span>
+  </div>
+
+  <!-- DASHBOARD MOCKUP -->
+  <div class="dash-wrap">
+    <div class="dash-glow"></div>
+    <div class="dash-frame">
+      <div class="dash-bar">
+        <div class="win-btns">
+          <div class="wb" style="background:#FF5F57"></div>
+          <div class="wb" style="background:#FFBD2E"></div>
+          <div class="wb" style="background:#28CA41"></div>
+        </div>
+        <div class="dash-url">app.agentflow.ai/dashboard</div>
+      </div>
+      <div class="dash-content">
+        <div class="dash-sidebar">
+          <div class="ds-brand"><div class="ds-logo"></div> AgentFlow</div>
+          <div class="ds-section">
+            <div class="ds-sec-label">Agent</div>
+            <div class="ds-item on">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              My Agent <span class="ds-badge">LIVE</span>
+            </div>
+            <div class="ds-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              Configuration
+            </div>
+            <div class="ds-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Knowledge Base
+            </div>
+            <div class="ds-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Integrations
+            </div>
+          </div>
+          <div class="ds-section">
+            <div class="ds-sec-label">Analytics</div>
+            <div class="ds-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Dashboard
+            </div>
+            <div class="ds-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Conversations
+            </div>
+          </div>
+        </div>
+        <div class="dash-main">
+          <div class="dm-top">
+            <div>
+              <div class="dm-title">AI Agent — "Alex" &nbsp;<span style="color:var(--muted);font-weight:400;font-size:0.8rem">·</span>&nbsp; Mike's Plumbing Co.</div>
+              <div class="dm-sub">Configured 5 days ago · Denver, CO</div>
+            </div>
+            <div class="live-chip"><div class="live-dot"></div> Active</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><div class="metric-val" style="color:var(--green)">847</div><div class="metric-lbl">Queries Handled</div><div class="metric-up">↑ 23% this week</div></div>
+            <div class="metric"><div class="metric-val" style="color:var(--blue)">94%</div><div class="metric-lbl">Resolution Rate</div><div class="metric-up">↑ 8% vs last mo</div></div>
+            <div class="metric"><div class="metric-val" style="color:var(--orange)">143</div><div class="metric-lbl">Leads Captured</div><div class="metric-up">↑ 41% this week</div></div>
+            <div class="metric"><div class="metric-val">0.9s</div><div class="metric-lbl">Avg Response</div><div class="metric-up" style="color:var(--green)">↓ 0.3s faster</div></div>
+          </div>
+          <div class="task-panel">
+            <div class="tp-head">
+              <div class="tp-title">Configured Tasks</div>
+              <div class="tp-add">+ Add Task</div>
+            </div>
+            <div class="task-row">
+              <div class="t-check done"><svg width="8" height="8" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#060608" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+              <span class="t-name">Answer service & pricing FAQs</span>
+              <span class="t-chip chip-g">Active</span>
+            </div>
+            <div class="task-row">
+              <div class="t-check done"><svg width="8" height="8" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#060608" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+              <span class="t-name">Book service appointments via Google Calendar</span>
+              <span class="t-chip chip-b">Calendar</span>
+            </div>
+            <div class="task-row">
+              <div class="t-check done"><svg width="8" height="8" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#060608" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+              <span class="t-name">Capture leads & add to CRM automatically</span>
+              <span class="t-chip chip-b">HubSpot</span>
+            </div>
+            <div class="task-row">
+              <div class="t-check"></div>
+              <span class="t-name">Send follow-up emails after completed jobs</span>
+              <span class="t-chip chip-o">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ti"><div class="ti-dot"></div>Knowledge Base Builder</span>
+    <span class="ti"><div class="ti-dot"></div>Task Configuration</span>
+    <span class="ti"><div class="ti-dot"></div>Lead Capture & CRM Sync</span>
+    <span class="ti"><div class="ti-dot"></div>Appointment Booking</span>
+    <span class="ti"><div class="ti-dot"></div>Google Calendar Integration</span>
+    <span class="ti"><div class="ti-dot"></div>Auto Follow-Ups</span>
+    <span class="ti"><div class="ti-dot"></div>Live Escalation to Human</span>
+    <span class="ti"><div class="ti-dot"></div>Multi-Channel Deploy</span>
+    <span class="ti"><div class="ti-dot"></div>Real-Time Analytics</span>
+    <span class="ti"><div class="ti-dot"></div>No-Code Setup</span>
+    <span class="ti"><div class="ti-dot"></div>24/7 Availability</span>
+    <span class="ti"><div class="ti-dot"></div>Knowledge Base Builder</span>
+    <span class="ti"><div class="ti-dot"></div>Task Configuration</span>
+    <span class="ti"><div class="ti-dot"></div>Lead Capture & CRM Sync</span>
+    <span class="ti"><div class="ti-dot"></div>Appointment Booking</span>
+    <span class="ti"><div class="ti-dot"></div>Google Calendar Integration</span>
+    <span class="ti"><div class="ti-dot"></div>Auto Follow-Ups</span>
+    <span class="ti"><div class="ti-dot"></div>Live Escalation to Human</span>
+    <span class="ti"><div class="ti-dot"></div>Multi-Channel Deploy</span>
+    <span class="ti"><div class="ti-dot"></div>Real-Time Analytics</span>
+    <span class="ti"><div class="ti-dot"></div>No-Code Setup</span>
+    <span class="ti"><div class="ti-dot"></div>24/7 Availability</span>
+  </div>
+</div>
+
+<!-- LOGOS -->
+<div class="logos r">
+  <div class="logos-lbl">Trusted by local service businesses across the US</div>
+  <div class="logos-row">
+    <span class="lg">PLUMBING CO.</span>
+    <span class="lg">HVAC PRO</span>
+    <span class="lg">ROOFING INC.</span>
+    <span class="lg">AUTO REPAIR</span>
+    <span class="lg">PEST CONTROL</span>
+    <span class="lg">SELF STORAGE</span>
+    <span class="lg">LANDSCAPING</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="sec" id="problem">
+  <div class="problem-grid">
+    <div class="r">
+      <span class="sec-tag">// The Problem</span>
+      <h2 class="sec-title">Your team is buried in calls that should never reach them.</h2>
+      <p class="sec-sub">Every day, your staff fields the same questions, misses after-hours calls, and manually logs everything into spreadsheets. Revenue walks out the door.</p>
+      <div class="prob-checks">
+        <div class="pcheck">
+          <div class="pcheck-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,100,100,0.7)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          Missed calls after 5pm losing jobs to competitors
+        </div>
+        <div class="pcheck">
+          <div class="pcheck-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,100,100,0.7)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          Hours wasted answering the same FAQs every day
+        </div>
+        <div class="pcheck">
+          <div class="pcheck-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,100,100,0.7)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          Leads that never got a follow-up and went cold
+        </div>
+      </div>
+      <div style="margin-top:28px;display:flex;gap:10px;align-items:center">
+        <a href="#pricing" class="btn btn-primary">Fix This with AgentFlow →</a>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--muted)">live in 30 min</span>
+      </div>
+    </div>
+    <div class="ba-stack r">
+      <div class="ba">
+        <div class="ba-head bad-h">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          Without AgentFlow
+        </div>
+        <div class="ba-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/><path d="M14.05 2.26a10 10 0 0 1 7.69 7.69"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          Calls go to voicemail after 5pm
+        </div>
+        <div class="ba-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Staff spends hours on repetitive questions
+        </div>
+        <div class="ba-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Leads fall through — no one follows up
+        </div>
+        <div class="ba-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Bookings managed via text & sticky notes
+        </div>
+      </div>
+      <div class="ba good">
+        <div class="ba-head good-h">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          With AgentFlow
+        </div>
+        <div class="ba-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          AI answers every inquiry, 24/7/365
+        </div>
+        <div class="ba-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Instant, accurate answers in under 1 second
+        </div>
+        <div class="ba-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Every lead captured & auto-followed up
+        </div>
+        <div class="ba-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Calendar synced, bookings automatic
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec" id="how">
+  <div class="sec-center r">
+    <span class="sec-tag">// How It Works</span>
+    <h2 class="sec-title">Up and running in 4 steps.<br>No developers needed.</h2>
+    <p class="sec-sub">Register your business, configure your AI agent, connect your tools — and go live in under 30 minutes.</p>
+  </div>
+  <div class="steps-grid r" style="margin-top:52px">
+    <div class="step">
+      <div class="step-n">01 / REGISTER</div>
+      <div class="step-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h3>Describe Your Business</h3>
+      <p>Enter your business name, service area, what you do, pricing, and FAQs. Your AI learns your business instantly.</p>
+      <div class="step-arr">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">02 / CONFIGURE</div>
+      <div class="step-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </div>
+      <h3>Set Tasks & Rules</h3>
+      <p>Choose what your agent does — answer FAQs, book jobs, capture leads, follow up. Set business hours and escalation rules.</p>
+      <div class="step-arr">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">03 / CONNECT</div>
+      <div class="step-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <h3>Connect Your Tools</h3>
+      <p>Link your CRM, calendar, email, and other tools in one click. Your agent syncs with everything you already use.</p>
+      <div class="step-arr">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">04 / DEPLOY</div>
+      <div class="step-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </div>
+      <h3>Go Live & Monitor</h3>
+      <p>Subscribe and activate. Embed on your website or connect to your chat channel. Monitor every conversation live.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="sec" id="features">
+  <div class="sec-center r">
+    <span class="sec-tag">// Features</span>
+    <h2 class="sec-title">Everything your AI employee needs.</h2>
+    <p class="sec-sub">Configure once. Your agent handles it all — around the clock, exactly the way you set it up.</p>
+  </div>
+  <div class="feat-bento r" style="margin-top:52px">
+
+    <div class="feat f-wide">
+      <div class="feat-ico fi-green">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <h3>Knowledge Base Builder</h3>
+      <p>Upload your service guides, pricing sheets, FAQs, and policies. Your agent learns your entire business and answers with precision — only using information you've approved.</p>
+      <div class="feat-pills">
+        <span class="fpill">PDF Upload</span><span class="fpill">URL Import</span><span class="fpill">Manual Q&A Editor</span><span class="fpill">Auto-Sync</span><span class="fpill">Version History</span>
+      </div>
+      <div class="mini-metrics">
+        <div class="mm"><div class="mm-val" style="color:var(--green)">1,240</div><div class="mm-lbl">Queries handled</div></div>
+        <div class="mm"><div class="mm-val" style="color:var(--blue)">98%</div><div class="mm-lbl">Accuracy rate</div></div>
+        <div class="mm"><div class="mm-val" style="color:var(--orange)">0.8s</div><div class="mm-lbl">Avg response</div></div>
+      </div>
+    </div>
+
+    <div class="feat">
+      <div class="feat-ico fi-blue">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <h3>Smart Scheduling</h3>
+      <p>Your agent books appointments, sends confirmation emails, and syncs directly to Google Calendar or any calendar tool — zero double bookings.</p>
+      <div class="feat-pills"><span class="fpill">Google Cal</span><span class="fpill">Calendly</span><span class="fpill">Auto-Confirm</span></div>
+    </div>
+
+    <div class="feat">
+      <div class="feat-ico fi-orange">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3>Lead Capture & CRM</h3>
+      <p>Every visitor who asks a question becomes a structured lead in your CRM automatically. Name, issue, contact info — all logged.</p>
+      <div class="feat-pills"><span class="fpill">HubSpot</span><span class="fpill">Salesforce</span><span class="fpill">Zoho</span></div>
+    </div>
+
+    <div class="feat">
+      <div class="feat-ico fi-green">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <h3>Multi-Channel Deploy</h3>
+      <p>Deploy your agent on your website chat widget, Facebook Messenger, and more — all managed from one dashboard.</p>
+      <div class="feat-pills"><span class="fpill">Web Widget</span><span class="fpill">FB Messenger</span><span class="fpill">SMS</span></div>
+    </div>
+
+    <div class="feat">
+      <div class="feat-ico fi-blue">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>Smart Escalation</h3>
+      <p>When a situation needs a human, your agent hands off seamlessly with the full conversation context — customers never have to repeat themselves.</p>
+      <div class="feat-pills"><span class="fpill">Live Handoff</span><span class="fpill">Ticket Create</span></div>
+    </div>
+
+    <div class="feat">
+      <div class="feat-ico fi-orange">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <h3>Analytics & Transcripts</h3>
+      <p>See every conversation. Understand what your customers ask most. Get weekly email reports on agent performance automatically.</p>
+      <div class="feat-pills"><span class="fpill">Full Transcripts</span><span class="fpill">Weekly Reports</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- USE CASES / INDUSTRIES -->
+<section class="sec" id="businesses">
+  <div class="sec-center r">
+    <span class="sec-tag">// Industries</span>
+    <h2 class="sec-title">Built for every local<br>service business.</h2>
+    <p class="sec-sub">Your AI agent adapts to your industry — configured with the tasks, terminology, and workflows specific to your trade.</p>
+  </div>
+  <div class="uc-grid r" style="margin-top:52px">
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <div class="uc-name">Plumbing Companies</div>
+      <div class="uc-desc">Book service calls, answer emergency questions, capture leads after hours.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="uc-name">HVAC Companies</div>
+      <div class="uc-desc">Handle maintenance requests, answer system FAQs, schedule tune-ups year-round.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="uc-name">Roofing Contractors</div>
+      <div class="uc-desc">Qualify storm damage leads, book inspections, answer material & warranty questions.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <div class="uc-name">Auto Repair Shops</div>
+      <div class="uc-desc">Book service appointments, give repair estimates, answer common vehicle questions.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      </div>
+      <div class="uc-name">Self Storage</div>
+      <div class="uc-desc">Check unit availability, quote pricing, book move-ins without a single phone call.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      </div>
+      <div class="uc-name">Property Management</div>
+      <div class="uc-desc">Handle tenant inquiries, maintenance requests, and lease questions automatically.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div class="uc-name">Pest Control</div>
+      <div class="uc-desc">Answer treatment questions, book inspections, and send seasonal reminders.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <div class="uc-name">Hair Salons</div>
+      <div class="uc-desc">Book appointments, answer service & pricing questions, reduce no-shows with reminders.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div class="uc-name">Moving Companies</div>
+      <div class="uc-desc">Get move details, give estimates, book jobs — your agent qualifies every lead.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M12 22V12m0 0C9 9 5 6.5 5 3.5A3.5 3.5 0 0 1 12 2a3.5 3.5 0 0 1 7 1.5C19 6.5 15 9 12 12z"/></svg>
+      </div>
+      <div class="uc-name">Landscape Design</div>
+      <div class="uc-desc">Capture seasonal leads, book consultations, answer plant and service questions.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+      </div>
+      <div class="uc-name">Water Damage</div>
+      <div class="uc-desc">Handle urgent 24/7 emergency inquiries, dispatch crews, and qualify insurance claims.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><rect x="9" y="11" width="6" height="9"/></svg>
+      </div>
+      <div class="uc-name">Home Renovation</div>
+      <div class="uc-desc">Qualify project leads, book estimates, answer material and timeline questions.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      </div>
+      <div class="uc-name">Pool & Spa Installers</div>
+      <div class="uc-desc">Answer design questions, book site visits, and send maintenance reminders.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div class="uc-name">Home Security</div>
+      <div class="uc-desc">Qualify homeowner leads, answer system questions, and book install appointments.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      </div>
+      <div class="uc-name">Appliance Repair</div>
+      <div class="uc-desc">Diagnose issues via chat, book repair visits, and provide parts availability info.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+      </div>
+      <div class="uc-name">Windows & Doors</div>
+      <div class="uc-desc">Answer product questions, book measure appointments, and follow up on quotes.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div class="uc-name">Cleaning Services</div>
+      <div class="uc-desc">Book recurring cleans, give instant quotes, and send appointment reminders.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </div>
+      <div class="uc-name">General Contractors</div>
+      <div class="uc-desc">Qualify project scope, book walkthroughs, and manage bid follow-ups.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="uc-name">Tree Service</div>
+      <div class="uc-desc">Capture removal & trimming requests, book estimates, answer permit questions.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+      </div>
+      <div class="uc-name">Real Estate</div>
+      <div class="uc-desc">Qualify buyer & seller leads, book showings, and answer listing questions 24/7.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <div class="uc-name">Locksmiths</div>
+      <div class="uc-desc">Handle emergency lockout requests around the clock and dispatch crews instantly.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="uc-name">Apartment Complexes</div>
+      <div class="uc-desc">Answer leasing questions, book tours, and handle maintenance requests automatically.</div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="uc-name">Restaurants</div>
+      <div class="uc-desc">Take reservations, answer menu questions, and manage waitlist inquiries.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section class="sec" id="integrations">
+  <div class="sec-center r">
+    <span class="sec-tag">// Integrations</span>
+    <h2 class="sec-title">Plugs into what<br>you already use.</h2>
+    <p class="sec-sub">One-click connections to the tools your business runs on. Everything syncs automatically.</p>
+  </div>
+  <div class="intg-grid r" style="margin-top:52px">
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div class="intg-name">Google Cal</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><path d="M21 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3m18 0v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18 0H3"/></svg>
+      <div class="intg-name">HubSpot</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <div class="intg-name">Gmail</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <div class="intg-name">Salesforce</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <div class="intg-name">Slack</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+      <div class="intg-name">Zapier</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <div class="intg-name">Stripe</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.17 18 19.5 19.5 0 0 1 6.8 14.83 19.79 19.79 0 0 1 3.08 6.18 2 2 0 0 1 5.07 4h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.91 11a16 16 0 0 0 6 6l.41-.41a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 23 19v3"/></svg>
+      <div class="intg-name">Twilio</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <div class="intg-name">Airtable</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <div class="intg-name">Notion</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <div class="intg-name">Shopify</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <div class="intg-name">Zoho CRM</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <div class="intg-name">GoHighLevel</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <div class="intg-name">ServiceTitan</div>
+    </div>
+    <div class="intg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <div class="intg-name">Jobber</div>
+    </div>
+    <div class="intg intg-more">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <div class="intg-name">+485 more</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" id="pricing">
+  <div class="sec-center r">
+    <span class="sec-tag">// Pricing</span>
+    <h2 class="sec-title">Simple, transparent pricing.</h2>
+    <p class="sec-sub">No setup fees. No long-term contracts. Your AI employee is live today.</p>
+  </div>
+  <div class="price-grid r" style="margin-top:52px">
+    <div class="price">
+      <div class="price-plan">Starter</div>
+      <div class="price-amt"><sup>$</sup>97 <span>/mo</span></div>
+      <div class="price-desc">For small local businesses getting started with AI automation.</div>
+      <ul class="price-ul">
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>1 AI Agent</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>1,000 conversations/month</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Knowledge Base (50 docs)</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>3 Integrations</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Website Widget</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Email Support</li>
+        <li class="off"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>SMS Channel</li>
+        <li class="off"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>Custom Branding</li>
+      </ul>
+      <a href="#" class="btn-block btn-b-ghost">Get Started</a>
+    </div>
+    <div class="price pop">
+      <div class="pop-lbl">MOST POPULAR</div>
+      <div class="price-plan">Professional</div>
+      <div class="price-amt"><sup>$</sup>297 <span>/mo</span></div>
+      <div class="price-desc">For growing businesses that need full power and deeper integrations.</div>
+      <ul class="price-ul">
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>3 AI Agents</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>10,000 conversations/month</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Knowledge Base (unlimited)</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All 500+ Integrations</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Web + SMS + Facebook</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Smart Escalation to Human</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Full Analytics & Transcripts</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority Support</li>
+      </ul>
+      <a href="#" class="btn-block btn-b-green">Start 14-Day Free Trial</a>
+    </div>
+    <div class="price">
+      <div class="price-plan">Agency / Enterprise</div>
+      <div class="price-amt" style="font-size:2.2rem">Custom</div>
+      <div class="price-desc">For agencies managing multiple clients or enterprises needing custom workflows.</div>
+      <ul class="price-ul">
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited Agents</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited Conversations</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>White-Label Option</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Custom Integration Dev</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Dedicated Account Manager</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>99.9% SLA Guarantee</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Custom Onboarding</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>SOC 2 Compliance</li>
+      </ul>
+      <a href="#" class="btn-block btn-b-ghost">Contact Sales →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<div class="testi-bg">
+  <section class="sec">
+    <div class="sec-center r">
+      <span class="sec-tag">// Testimonials</span>
+      <h2 class="sec-title">Local businesses are winning.</h2>
+      <p class="sec-sub">Real results from real service business owners across the US.</p>
+    </div>
+    <div class="testi-grid r" style="margin-top:52px">
+      <div class="tc">
+        <div class="tc-stars">★★★★★</div>
+        <p class="tc-text">"We were missing 30-40% of our calls after 5pm — people calling for emergency plumbing just went to the next company. AgentFlow captures every one of those now. Paid for itself in the first week."</p>
+        <div class="tc-author">
+          <div class="tc-av" style="background:linear-gradient(135deg,#00E5A0,#4B9EFF)">MJ</div>
+          <div><div class="tc-name">Mike Johnson</div><div class="tc-role">Owner · Mike's Plumbing Co. · Denver, CO</div></div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-stars">★★★★★</div>
+        <p class="tc-text">"Our front desk was spending 3 hours a day answering the same questions about pricing and availability. Now the AI handles all of that. My staff actually does sales work now instead."</p>
+        <div class="tc-author">
+          <div class="tc-av" style="background:linear-gradient(135deg,#4B9EFF,#A78BFA)">SR</div>
+          <div><div class="tc-name">Sarah Rivera</div><div class="tc-role">Manager · Crystal Clean Services · Austin, TX</div></div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-stars">★★★★★</div>
+        <p class="tc-text">"I set it up for my roofing company in about 20 minutes. Connected my CRM and Google Calendar, and now every storm season lead gets captured and followed up automatically. Game changer."</p>
+        <div class="tc-author">
+          <div class="tc-av" style="background:linear-gradient(135deg,#FF7B3E,#A78BFA)">TK</div>
+          <div><div class="tc-name">Tom Kowalski</div><div class="tc-role">CEO · TK Roofing Inc. · Chicago, IL</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-orb"></div>
+  <div class="eyebrow r" style="margin:0 auto 24px">
+    <span class="eyebrow-text">14-day free trial · No credit card · Cancel anytime</span>
+    <span class="eyebrow-pill">FREE TRIAL</span>
+  </div>
+  <h2 class="r">Your AI employee is<br><span class="grad-text">ready to be built.</span></h2>
+  <p class="r">Join 14,000+ local businesses that have automated their operations. Setup takes less than 30 minutes.</p>
+  <div class="r" style="display:flex;gap:12px;justify-content:center">
+    <a href="#pricing" class="btn btn-primary btn-lg">Build My AI Agent Free →</a>
+    <a href="#how" class="btn btn-ghost btn-lg">See a Demo</a>
+  </div>
+  <div class="cta-note r">No developers required · No long-term contracts · Live in 30 minutes</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="nav-logo" style="color:var(--text)">
+      <div class="logo-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="#060608"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="#060608"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="#060608"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="#060608" opacity="0.35"/></svg></div>
+      AgentFlow
+    </div>
+    <div class="ft-desc">Build and deploy AI employees for your local service business. No code, no developers, live in 30 minutes.</div>
+  </div>
+  <div class="ft-col">
+    <h5>Product</h5>
+    <ul>
+      <li><a href="#">Features</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">Integrations</a></li>
+      <li><a href="#">Industries</a></li>
+      <li><a href="#">Changelog</a></li>
+    </ul>
+  </div>
+  <div class="ft-col">
+    <h5>Company</h5>
+    <ul>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Careers</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+  <div class="ft-col">
+    <h5>Legal</h5>
+    <ul>
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="#">Security</a></li>
+      <li><a href="#">CCPA</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="ft-bottom">
+  <span>© 2025 AgentFlow — All rights reserved.</span>
+  <span style="color:var(--green)">AI employees for every local business.</span>
+</div>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('on'); obs.unobserve(e.target); }});
+}, { threshold: 0.07, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.r').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
